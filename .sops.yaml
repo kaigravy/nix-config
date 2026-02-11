@@ -4,11 +4,11 @@
 keys:
   # Your age public key will go here after generation
   # Format: &key_name AGE_PUBLIC_KEY
-  - &kai age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  - &kai age1f7htphxkja8l2ddfh2az7pqyjk6k2dzp7vhwv7mthezpg3hc8gvqs33zh5
 
 creation_rules:
   # Rule for secrets.yaml
-  - path_regex: secrets/secrets\.yaml$
+  - path_regex: (secrets/)?secrets.yaml$
     key_groups:
       - age:
           - *kai

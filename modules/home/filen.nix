@@ -8,11 +8,13 @@ let
     {
       local = "${homeDir}/Desktop";
       remote = "/Desktop";
+      mode = "twoWay";
       syncMode = "twoWay";
     }
     {
       local = "${homeDir}/Documents";
       remote = "/Documents";
+      mode = "twoWay";
       syncMode = "twoWay";
     }
   ];
