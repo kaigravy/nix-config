@@ -2,7 +2,6 @@
 
 {
   imports = [
-    inputs.impermanence.nixosModules.home-manager.impermanence
     inputs.evict.homeManagerModules.evict
     ./shell.nix
     ./git.nix
