@@ -1,16 +1,16 @@
 { lib, stdenv, fetchurl, autoPatchelfHook }:
 
 let
-  version = "0.0.36";
+  version = "0.0.39";
 
   sources = {
     x86_64-linux = {
       url = "https://github.com/FilenCloudDienste/filen-cli/releases/download/v${version}/filen-cli-v${version}-linux-x64";
-      hash = "sha256:be690d94d3310187dc7b4fe46b3e49becfb327c29ac64d49cfe73252c7c3c04a";
+      hash = "sha256-1j48mb18p43sa7dp6xb9abpm56llg2g6k65zc56jp1k7446fqsia";
     };
     aarch64-linux = {
       url = "https://github.com/FilenCloudDienste/filen-cli/releases/download/v${version}/filen-cli-v${version}-linux-arm64";
-      hash = "sha256:fda28526b5d11f9e860eb1bce8a8069da30fe03ccb5b58d6558e0c24845cbca4";
+      hash = lib.fakeHash;  # Update this if you need ARM support
     };
   };
 
