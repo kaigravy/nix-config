@@ -44,7 +44,8 @@ in
       After = [ "network-online.target" ];
       Wants = [ "network-online.target" ];
       # Only start if auth config exists
-      ConditionPathExists = "${configDir}/.config/filen-cli/.filen-cli-auth-config";
+      # xdg.configFile puts files in XDG_CONFIG_HOME which is configDir
+      ConditionPathExists = "${config.xdg.configHome}/filen-cli/.filen-cli-auth-config";
     };
 
     Service = {
