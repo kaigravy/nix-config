@@ -20,9 +20,14 @@
       url = "github:TRPB/evict";
       flake = true;
     };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, ... }@inputs: {
     nixosConfigurations = {
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -31,6 +36,7 @@
           disko.nixosModules.disko
           impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
+          sops-nix.nixosModules.sops
           ./hosts/vm
         ];
       };

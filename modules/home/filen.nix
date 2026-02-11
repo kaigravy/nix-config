@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 
 let
   filen-cli = pkgs.callPackage ../../packages/filen-cli.nix { };
@@ -24,13 +24,18 @@ in
   # Write sync pair configuration into evict's config dir
   xdg.configFile."filen-cli/syncPairs.json".text = syncPairs;
 
+  # Copy authentication config from secrets if available
+  # Uses systemd tmpfiles to handle optional copying
+  xdg.configFile."filen-cli/.filen-cli-auth-config" = lib.mkIf (builtins.pathExists /run/secrets/filen-cli-auth) {
+    source = config.lib.file.mkOutOfStoreSymlink "/run/secrets/filen-cli-auth";
+  };
+
   # Persist directories across ephemeral home wipes
   home.persistence."/persist" = {
     directories = [
       "${config.home.evict.homeDirName}/Desktop"
       "${config.home.evict.homeDirName}/Documents"
       "${config.home.evict.homeDirName}/Downloads"
-      "${config.home.evict.configDirName}/filen-cli"
     ];
   };
 
@@ -40,6 +45,8 @@ in
       Description = "Filen continuous sync";
       After = [ "network-online.target" ];
       Wants = [ "network-online.target" ];
+      # Only start if auth config exists
+      ConditionPathExists = "${configDir}/.config/filen-cli/.filen-cli-auth-config";
     };
 
     Service = {

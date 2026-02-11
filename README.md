@@ -60,6 +60,65 @@ After rebooting:
 ```
 ├── flake.nix                     # Entry point
 ├── install.sh                    # One-command installer
+├── .sops.yaml                    # SOPS configuration
+├── secrets/
+│   ├── secrets.yaml              # Encrypted secrets (SOPS)
+│   ├── shell.nix                 # Dev environment for secret management
+│   └── README.md                 # Secret management guide
+├── hosts/
+│   ├── common/default.nix        # Shared configuration
+│   └── vm/
+│       ├── default.nix           # VM-specific config
+│       ├── disks.nix             # Disk layout (disko)
+│       └── hardware.nix          # Hardware config
+├── modules/
+│   ├── nixos/                    # System modules
+│   │   ├── boot.nix              # Bootloader + btrfs rollback
+│   │   ├── btrfs.nix             # btrfs support
+│   │   ├── gnome.nix             # GNOME desktop (swappable)
+│   │   ├── impermanence.nix      # Persistent state declarations
+│   │   ├── locale.nix            # Timezone + i18n
+│   │   ├── networking.nix        # Network config
+│   │   ├── nix-settings.nix      # Nix daemon settings
+│   │   ├── sops.nix              # Secret management
+│   │   └── users.nix             # User accounts
+│   └── home/                     # Home-manager modules
+│       ├── default.nix           # Base home config
+│       ├── filen.nix             # Filen cloud sync
+│       ├── git.nix               # Git
+│       └── shell.nix             # Shell environment
+└── packages/
+    └── filen-cli.nix             # Filen CLI package
+```
+
+## Secret Management
+
+This configuration uses [sops-nix](https://github.com/Mic92/sops-nix) with age encryption for managing secrets like the Filen CLI authentication config.
+
+### Quick Start
+
+```bash
+# Enter secrets environment
+cd secrets && nix-shell
+
+# Generate age key (first time)
+sudo mkdir -p /persist/sops
+age-keygen -o /persist/sops/age-keys.txt
+sudo chmod 600 /persist/sops/age-keys.txt
+
+# Copy the public key shown, edit ../.sops.yaml and add it
+
+# Edit and encrypt secrets
+sops secrets.yaml
+```
+
+See `secrets/README.md` for detailed instructions.
+
+## Structure
+
+```
+├── flake.nix                     # Entry point
+├── install.sh                    # One-command installer
 ├── hosts/
 │   ├── common/default.nix        # Shared configuration
 │   └── vm/

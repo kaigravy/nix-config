@@ -4,3 +4,8 @@ result-*
 
 # Ignore automatically generated direnv output
 .direnv
+
+# SOPS - only commit encrypted files
+secrets/*.dec
+secrets/*.dec.*
+secrets/*_unencrypted.*

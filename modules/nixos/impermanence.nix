@@ -14,6 +14,11 @@
     ];
   };
 
+  # Persist SOPS keys directory
+  systemd.tmpfiles.rules = [
+    "d /persist/sops 0755 root root -"
+  ];
+
   # Allow home-manager impermanence bind mounts via FUSE
   programs.fuse.userAllowOther = true;
 

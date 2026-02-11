@@ -1,0 +1,14 @@
+# SOPS configuration file
+# This defines which keys can decrypt which secrets
+
+keys:
+  # Your age public key will go here after generation
+  # Format: &key_name AGE_PUBLIC_KEY
+  - &kai age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+creation_rules:
+  # Rule for secrets.yaml
+  - path_regex: secrets/secrets\.yaml$
+    key_groups:
+      - age:
+          - *kai
