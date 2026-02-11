@@ -1,7 +1,6 @@
 { pkgs, config, lib, ... }:
 
 let
-  filen-cli = pkgs.callPackage ../../packages/filen-cli.nix { };
   homeDir = "${config.home.homeDirectory}/${config.home.evict.homeDirName}";
   configDir = "${config.home.homeDirectory}/${config.home.evict.configDirName}";
 
@@ -19,7 +18,7 @@ let
   ];
 in
 {
-  home.packages = [ filen-cli ];
+  home.packages = [ pkgs.filen-cli ];
 
   # Write sync pair configuration into evict's config dir
   xdg.configFile."filen-cli/syncPairs.json".text = syncPairs;
@@ -51,7 +50,7 @@ in
     Service = {
       Type = "simple";
       Environment = [ "XDG_CONFIG_HOME=${configDir}" ];
-      ExecStart = "${filen-cli}/bin/filen sync --continuous";
+      ExecStart = "${pkgs.filen-cli}/bin/filen sync --continuous";
       Restart = "on-failure";
       RestartSec = 10;
     };

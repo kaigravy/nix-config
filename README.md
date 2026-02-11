@@ -87,8 +87,6 @@ After rebooting:
 │       ├── filen.nix             # Filen cloud sync
 │       ├── git.nix               # Git
 │       └── shell.nix             # Shell environment
-└── packages/
-    └── filen-cli.nix             # Filen CLI package
 ```
 
 ## Secret Management
