@@ -1,15 +1,8 @@
 { config, lib, ... }:
 
-let
-  # Check if the age key file exists
-  ageKeyExists = builtins.pathExists /persist/sops/age-keys.txt;
-  # Check if secrets file exists and is not the template
-  secretsFileExists = builtins.pathExists ../../secrets/secrets.yaml;
-in
 {
   # SOPS configuration for secret management
-  # Only activate if the age key exists
-  sops = lib.mkIf ageKeyExists {
+  sops = {
     # Default SOPS file location
     defaultSopsFile = ../../secrets/secrets.yaml;
     
@@ -18,6 +11,7 @@ in
     
     # Validate sops files at activation time
     # Set to false to allow building even if secrets file isn't properly encrypted yet
+    # or if the key doesn't exist on a new machine
     validateSopsFiles = false;
 
     # Define secrets to be decrypted
