@@ -24,11 +24,10 @@ in
   # Write sync pair configuration into evict's config dir
   xdg.configFile."filen-cli/syncPairs.json".text = syncPairs;
 
-  # Copy authentication config from secrets if available
-  # Uses systemd tmpfiles to handle optional copying
-  xdg.configFile."filen-cli/.filen-cli-auth-config" = lib.mkIf (builtins.pathExists /run/secrets/filen-cli-auth) {
-    source = config.lib.file.mkOutOfStoreSymlink "/run/secrets/filen-cli-auth";
-  };
+  # Symlink authentication config from secrets
+  # The symlink will be broken if secret doesn't exist, but service won't start
+  xdg.configFile."filen-cli/.filen-cli-auth-config".source = 
+    config.lib.file.mkOutOfStoreSymlink "/run/secrets/filen-cli-auth";
 
   # Persist directories across ephemeral home wipes
   home.persistence."/persist" = {
