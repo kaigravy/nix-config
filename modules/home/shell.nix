@@ -18,4 +18,8 @@ in
   systemd.user.sessionVariables = {
     XDG_CONFIG_HOME = configDir;
   };
+
+  # Symlink .config to config so systemd can find user services
+  # Systemd looks in ~/.config even when XDG_CONFIG_HOME is set differently
+  home.file.".config".source = config.lib.file.mkOutOfStoreSymlink configDir;
 }
