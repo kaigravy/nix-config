@@ -8,10 +8,11 @@ let
       url = "https://github.com/FilenCloudDienste/filen-cli/releases/download/v${version}/filen-cli-v${version}-linux-x64";
       hash = "sha256-1j48mb18p43sa7dp6xb9abpm56llg2g6k65zc56jp1k7446fqsia";
     };
-    aarch64-linux = {
-      url = "https://github.com/FilenCloudDienste/filen-cli/releases/download/v${version}/filen-cli-v${version}-linux-arm64";
-      hash = lib.fakeHash;  # Update this if you need ARM support
-    };
+    # Uncomment and add hash if you need ARM support
+    # aarch64-linux = {
+    #   url = "https://github.com/FilenCloudDienste/filen-cli/releases/download/v${version}/filen-cli-v${version}-linux-arm64";
+    #   hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    # };
   };
 
   src = fetchurl {
