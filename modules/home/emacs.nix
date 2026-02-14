@@ -8,6 +8,5 @@
   programs.doom-emacs = {
     enable = true;
     doomDir = ../../config/emacs/doom;
-    emacsPackage = pkgs.emacs30-gtk3;
   };
 }
