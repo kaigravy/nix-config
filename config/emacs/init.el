@@ -3,6 +3,7 @@
 ;;; Commentary:
 ;; This is the main Emacs configuration file.
 ;; All configuration is managed declaratively through Nix.
+;; Everything is ephemeral and regenerated on reboot.
 
 ;;; Code:
 
@@ -31,19 +32,18 @@
  tab-width 4
  fill-column 80)
 
-;; Respect EMACS_USER_DIRECTORY for persistent storage with impermanence
-(setq user-emacs-directory
-      (or (getenv "EMACS_USER_DIRECTORY")
-          user-emacs-directory))
-
-;; Save backup files to a dedicated directory
-(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
-(setq auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "auto-save/") t)))
+;; Disable backups and auto-saves (fully ephemeral system)
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+(setq auto-save-list-file-prefix nil)
+(setq create-lockfiles nil)
 
 ;; Enable recent files
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (setq recentf-max-saved-items 25)
+;; Don't save recentf across reboots (ephemeral)
+(setq recentf-auto-cleanup 'never)
 
 ;; Enable auto-revert for files changed on disk
 (global-auto-revert-mode 1)
@@ -61,10 +61,8 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-;; Load custom file if it exists (for customize interface)
-(setq custom-file (concat user-emacs-directory "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
+;; Disable custom file (not needed in declarative config)
+(setq custom-file (make-temp-file "emacs-custom-"))
 
 (provide 'init)
 ;;; init.el ends here
