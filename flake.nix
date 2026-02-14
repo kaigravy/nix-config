@@ -25,9 +25,13 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-doom-emacs = {
+      url = "github:nix-community/nix-doom-emacs";
+    };
   };
 
-  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, nix-doom-emacs, ... }@inputs: {
     nixosConfigurations = {
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";

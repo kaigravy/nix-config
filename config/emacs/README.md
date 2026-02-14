@@ -1,84 +1,119 @@
-# Emacs Configuration
+# Doom Emacs Configuration
 
-This directory contains the declarative Emacs configuration for this NixOS setup.
+This directory contains the declarative Doom Emacs configuration for this NixOS setup.
 
 ## Structure
 
-- `init.el` - Main Emacs configuration file with core settings
-- `early-init.el` - Early initialization for performance optimizations
+- `doom/init.el` - Doom modules configuration (which features to enable)
+- `doom/config.el` - Your personal configuration
+- `doom/packages.el` - Additional packages to install
 
-## Features
+## What is Doom Emacs?
 
-The current configuration includes:
+Doom Emacs is a configuration framework for Emacs that provides:
+- Pre-configured modules for various languages and tools
+- Vim keybindings (Evil mode) by default
+- Modern, fast UI with sensible defaults
+- Extensive package ecosystem
+- Great documentation
 
-### Core Settings
-- Clean UI (no menu bar, tool bar, or scroll bar)
-- Line numbers for most modes
-- Better defaults for indentation and backups
-- UTF-8 encoding everywhere
-- Auto-revert for files changed on disk
+## Installation Location
 
-### Installed Packages
-
-The following packages are installed via Nix (see `modules/home/emacs.nix`):
-
-- **Evil Mode** - Vim emulation (optional - can be removed if you prefer default Emacs keybindings)
-- **Which-key** - Shows available keybindings
-- **Doom Themes & Modeline** - Modern UI appearance
-- **Vertico/Marginalia/Consult** - Modern completion framework
-- **Magit** - Git interface
-- **LSP Mode** - Language Server Protocol support
-- **Nix Mode** - Syntax highlighting and support for Nix files
-- **Company** - Code completion
-- **Flycheck** - Syntax checking
-- **Projectile** - Project management
-- And more...
-
-## Customization
-
-### Adding Packages
-
-To add new Emacs packages, edit `modules/home/emacs.nix` and add them to the `extraPackages` list:
-
-```nix
-extraPackages = epkgs: with epkgs; [
-  # ... existing packages ...
-  your-new-package
-];
-```
-
-### Modifying Configuration
-
-Edit the files in this directory (`config/emacs/`):
-- `init.el` - For general configuration
-- `early-init.el` - For early startup optimizations
-
-The configuration is automatically linked to `~/.emacs.d/` by Home Manager.
-
-### Removing Evil Mode
-
-If you prefer default Emacs keybindings instead of Vim-style bindings, remove these lines from `modules/home/emacs.nix`:
-
-```nix
-evil                # Vim emulation
-evil-collection     # Evil bindings for various modes
-```
+- **Doom install**: `/users/kai/home/.emacs.d/` (persistent)
+- **Doom config**: `/users/kai/config/doom/` (ephemeral, generated from flake)
+- **Doom data**: `/users/kai/home/.local/share/doom/` (persistent)
 
 ## First Run
 
-On first run, Emacs may need to:
-1. Download and compile the packages (handled by Nix)
-2. Build icon fonts (if you see empty boxes, run `M-x all-the-icons-install-fonts`)
+After rebuilding your system:
 
-## Further Configuration
+```bash
+sudo nixos-rebuild switch --flake /workspaces/nix-config#vm
+```
 
-You can extend this configuration by:
-1. Adding new `.el` files in this directory
-2. Sourcing them in `init.el` with `(load "~/.emacs.d/your-file.el")`
-3. Adding the new files to `modules/home/emacs.nix` in the `home.file` section
+The first time, Doom will automatically:
+1. Clone the Doom Emacs repository
+2. Install all configured packages
+3. Compile everything for fast startup
+
+Then you can launch Emacs with:
+```bash
+emacs
+```
+
+Or use the Doom CLI:
+```bash
+doom doctor    # Check for issues
+doom sync      # Update packages
+doom upgrade   # Upgrade Doom itself
+```
+
+## Key Features Enabled
+
+The current configuration includes:
+
+- **Completion**: Vertico (modern completion UI)
+- **UI**: Doom dashboard, modeline, treemacs, workspaces
+- **Editor**: Evil (Vim bindings), snippets, multiple-cursors
+- **Tools**: LSP, Magit, tree-sitter
+- **Languages**: Nix, JavaScript, Markdown, YAML, JSON, Emacs Lisp, Shell, Org
+- **Terminal**: vterm (best terminal emulator for Emacs)
+
+## Customization
+
+### Enabling/Disabling Modules
+
+Edit `doom/init.el` to enable or disable Doom modules. Uncomment lines to enable features:
+
+```elisp
+:lang
+(python +lsp)    ; Enable Python with LSP support
+(rust +lsp)      ; Enable Rust with LSP support
+```
+
+### Personal Configuration
+
+Edit `doom/config.el` for your personal settings:
+- Theme selection
+- Keybindings
+- Package configuration
+
+### Installing Packages
+
+Edit `doom/packages.el` to install additional packages:
+
+```elisp
+(package! some-package)
+```
+
+### Applying Changes
+
+After editing any Doom config files, rebuild your system:
+
+```bash
+sudo nixos-rebuild switch --flake /workspaces/nix-config#vm
+```
+
+Doom will automatically sync packages on the next activation.
+
+## Keybindings
+
+Doom uses Vim-style keybindings by default:
+
+- `SPC` - Leader key for most commands
+- `SPC f f` - Find file
+- `SPC f r` - Recent files
+- `SPC b b` - Switch buffer
+- `SPC p p` - Switch project
+- `SPC g g` - Magit status
+- `SPC h d h` - Describe key
+- `SPC h d v` - Describe variable
+
+Press `SPC ?` to see all available keybindings.
 
 ## Resources
 
-- [Emacs Manual](https://www.gnu.org/software/emacs/manual/)
-- [Home Manager Options](https://nix-community.github.io/home-manager/options.html#opt-programs.emacs.enable)
-- [Evil Mode Documentation](https://github.com/emacs-evil/evil) (if using Evil)
+- [Doom Emacs Documentation](https://github.com/doomemacs/doomemacs/tree/master/docs)
+- [Doom Emacs Discourse](https://discourse.doomemacs.org/)
+- [Module Documentation](https://github.com/doomemacs/doomemacs/tree/master/modules)
+
