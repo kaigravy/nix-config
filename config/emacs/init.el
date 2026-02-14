@@ -31,6 +31,11 @@
  tab-width 4
  fill-column 80)
 
+;; Respect EMACS_USER_DIRECTORY for persistent storage with impermanence
+(setq user-emacs-directory
+      (or (getenv "EMACS_USER_DIRECTORY")
+          user-emacs-directory))
+
 ;; Save backup files to a dedicated directory
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 (setq auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "auto-save/") t)))

@@ -1,5 +1,8 @@
 { pkgs, config, ... }:
 
+let
+  emacsDir = "${config.home.homeDirectory}/${config.home.evict.configDirName}/emacs";
+in
 {
   programs.emacs = {
     enable = true;
@@ -49,19 +52,24 @@
     ];
   };
 
-  # Link config files from the flake
+  # Set Emacs to use the config directory via environment variable
+  home.sessionVariables = {
+    EMACS_USER_DIRECTORY = emacsDir;
+  };
+
+  # Link config files to the persistent config location
   home.file = {
-    ".emacs.d/init.el" = {
+    "${config.home.evict.configDirName}/emacs/init.el" = {
       source = ../../config/emacs/init.el;
     };
     
-    ".emacs.d/early-init.el" = {
+    "${config.home.evict.configDirName}/emacs/early-init.el" = {
       source = ../../config/emacs/early-init.el;
     };
   };
 
-  # Ensure directories exist for Emacs
+  # Ensure directories exist for Emacs in the persistent location
   home.activation.emacsDirectories = config.lib.dag.entryAfter ["writeBoundary"] ''
-    mkdir -p ${config.home.homeDirectory}/.emacs.d/{backups,auto-save}
+    mkdir -p ${emacsDir}/{backups,auto-save}
   '';
 }
