@@ -64,5 +64,106 @@
 ;; Disable custom file (not needed in declarative config)
 (setq custom-file (make-temp-file "emacs-custom-"))
 
+;;; Package Configuration
+
+;; Evil mode (Vim keybindings)
+(require 'evil)
+(setq evil-want-integration t)
+(setq evil-want-keybinding nil)
+(evil-mode 1)
+(require 'evil-collection)
+(evil-collection-init)
+
+;; Which-key for keybinding hints
+(require 'which-key)
+(which-key-mode 1)
+(setq which-key-idle-delay 0.3)
+
+;; Doom themes
+(require 'doom-themes)
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t)
+(load-theme 'doom-one t)
+(doom-themes-visual-bell-config)
+(doom-themes-org-config)
+
+;; Doom modeline
+(require 'doom-modeline)
+(doom-modeline-mode 1)
+(setq doom-modeline-height 25)
+
+;; Vertico - vertical completion
+(require 'vertico)
+(vertico-mode 1)
+
+;; Marginalia - rich annotations
+(require 'marginalia)
+(marginalia-mode 1)
+
+;; Orderless - flexible completion
+(require 'orderless)
+(setq completion-styles '(orderless basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion))))
+
+;; Consult - useful commands
+(require 'consult)
+;; Keybindings for consult
+(global-set-key (kbd "C-s") 'consult-line)
+(global-set-key (kbd "C-x b") 'consult-buffer)
+
+;; Embark - context actions
+(require 'embark)
+(require 'embark-consult)
+(global-set-key (kbd "C-.") 'embark-act)
+
+;; Company - code completion
+(require 'company)
+(add-hook 'after-init-hook 'global-company-mode)
+(setq company-idle-delay 0.2
+      company-minimum-prefix-length 1)
+
+;; Rainbow delimiters
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+;; Undo tree
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+(setq undo-tree-auto-save-history nil) ; Don't save history (ephemeral)
+
+;; Projectile - project management
+(require 'projectile)
+(projectile-mode 1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+;; Magit - Git interface
+(require 'magit)
+(global-set-key (kbd "C-x g") 'magit-status)
+
+;; Flycheck - syntax checking
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; Nix mode
+(require 'nix-mode)
+(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+
+;; Markdown mode
+(require 'markdown-mode)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+;; YAML mode
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+
+;; JSON mode
+(require 'json-mode)
+(add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
+
+;; Org bullets
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 (provide 'init)
 ;;; init.el ends here
