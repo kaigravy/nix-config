@@ -6,6 +6,7 @@
     ./shell.nix
     ./git.nix
     ./filen.nix
+    ./emacs.nix
   ];
 
   home = {
