@@ -4,7 +4,7 @@
   # Install Kitty
   home.packages = with pkgs; [
     kitty
-    (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
+    nerd-fonts.caskaydia-cove
   ];
 
   # Enable fontconfig
