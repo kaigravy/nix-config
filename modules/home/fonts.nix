@@ -12,7 +12,7 @@
         liberation_ttf  # Liberation Sans, Serif, Mono (MS Office compatible)
         dejavu_fonts    # DejaVu Sans, Serif, Mono
         noto-fonts      # Noto Sans, Serif
-        noto-fonts-emoji
+        noto-fonts-color-emoji
     ];
 
     fonts.fontconfig.enable = true;
