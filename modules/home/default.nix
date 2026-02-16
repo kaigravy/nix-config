@@ -4,6 +4,7 @@
   imports = [
     inputs.evict.homeManagerModules.evict
     ./shell.nix
+    ./fonts.nix
     ./git.nix
     ./filen.nix
     ./emacs.nix
