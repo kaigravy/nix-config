@@ -28,6 +28,7 @@
 
     nix-doom-emacs = {
       url = "github:marienz/nix-doom-emacs-unstraightened";
+      nix-doom-emacs-unstraightened.inputs.nixpkgs.follows = ""; # Downloads less; actual package doesn't follow nixpkgs
     };
   };
 
