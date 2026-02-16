@@ -7,6 +7,7 @@
     ./git.nix
     ./filen.nix
     ./emacs.nix
+    ./kitty.nix
   ];
 
   home = {
