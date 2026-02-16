@@ -7,7 +7,7 @@
     ./git.nix
     ./filen.nix
     ./emacs.nix
-    ./kitty.nix
+    # ./kitty.nix  # Temporarily disabled for debugging
   ];
 
   home = {

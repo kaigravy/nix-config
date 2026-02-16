@@ -4,7 +4,7 @@
   # Install Kitty and Cascadia Code Nerd Font
   home.packages = with pkgs; [
     kitty
-    nerd-fonts.caskaydia-cove
+    (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
   ];
 
   # Link the Kitty config file
