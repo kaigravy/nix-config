@@ -1,16 +1,9 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
 {
-  programs.kitty = {
-    enable = true;
-    font = {
-      name = "CaskaydiaCove Nerd Font Mono";
-      size = 12;
-    };
-  };
-
-  # Install Cascadia Code Nerd Font
+  # Install Kitty and Cascadia Code Nerd Font
   home.packages = with pkgs; [
+    kitty
     nerd-fonts.caskaydia-cove
   ];
 
