@@ -37,18 +37,6 @@ in
       #update = "cd /workspaces/nix-config && nix flake update && sudo nixos-rebuild switch --flake .#vm";
     };
 
-    # Oh-My-Zsh configuration
-    oh-my-zsh = {
-      enable = true;
-      plugins = [
-        "git"
-        "sudo"
-        "command-not-found"
-        "dirhistory"
-      ];
-      theme = "robbyrussell";
-    };
-
     # Additional init commands
     initExtra = ''
       # Better history search with arrow keys
@@ -61,16 +49,15 @@ in
       
       # Add Doom Emacs to PATH (using actual evict config path)
       export PATH="${configDir}/emacs/bin:$PATH"
-      
-      # Load spaceship prompt (after Oh-My-Zsh)
-      fpath+=${pkgs.spaceship-prompt}/share/zsh/site-functions
-      autoload -U promptinit; promptinit
-      prompt spaceship
     '';
+    
+    # Spaceship prompt
+    plugins = [
+      {
+        name = "spaceship-prompt";
+        src = pkgs.spaceship-prompt;
+        file = "share/zsh/site-functions/prompt_spaceship_setup";
+      }
+    ];
   };
-
-  # Install spaceship prompt
-  home.packages = with pkgs; [
-    spaceship-prompt
-  ];
 }
