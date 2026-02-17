@@ -10,7 +10,7 @@ in
   # Install Emacs
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs29-pgtk; # Emacs 29 with pure GTK
+    package = pkgs.emacs30-pgtk; # Emacs 30 with pure GTK
   };
 
   # Install dependencies for Doom Emacs
