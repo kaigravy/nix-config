@@ -71,6 +71,27 @@ in
     ];
   };
 
+  # Zoxide - smarter cd command
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    options = [
+      "--cmd cd"  # Use 'cd' instead of 'z' for familiarity
+    ];
+  };
+
+  # Persist zoxide database so it remembers directory usage across reboots
+  home.persistence."/persist" = {
+    directories = [
+      "${config.home.evict.configDirName}/zoxide"
+    ];
+  };
+
+  # Store zoxide data in config dir
+  home.sessionVariables = {
+    _ZO_DATA_DIR = "${configDir}/zoxide";
+  };
+
   # Symlink .config to config so systemd can find user services
   # Systemd looks in ~/.config even when XDG_CONFIG_HOME is set differently
   home.file.".config".source = config.lib.file.mkOutOfStoreSymlink configDir;

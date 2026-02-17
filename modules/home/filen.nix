@@ -17,6 +17,12 @@ let
       mode = "twoWay";
       syncMode = "twoWay";
     }
+    {
+      local = "${configDir}/zoxide";
+      remote = "/.sync/zoxide";
+      mode = "twoWay";
+      syncMode = "twoWay";
+    }
   ];
 in
 {
