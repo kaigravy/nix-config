@@ -32,6 +32,7 @@
   };
 
   # Roll back ephemeral subvolumes to blank snapshots on every boot.
+  boot.initrd.systemd.enable = true;
   boot.initrd.postDeviceCommands = lib.mkAfter ''
     mkdir -p /mnt
     mount /dev/mapper/cryptroot /mnt -t btrfs -o subvol=/
