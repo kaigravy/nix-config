@@ -9,10 +9,10 @@
   boot = {
     plymouth = {
       enable = true;
-      theme = "cuts";
+      theme = "red_loader";
       themePackages = with pkgs; [
         (adi1090x-plymouth-themes.override {
-          selected_themes = ["cuts"];
+          selected_themes = ["red_loader"];
         })
       ];
     };
