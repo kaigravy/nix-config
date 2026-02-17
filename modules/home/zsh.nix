@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  configDir = "${config.home.homeDirectory}/${config.home.evict.configDirName}";
+  configDir = "${config.xdg.configHome}";
 in
 {
   programs.zsh = {

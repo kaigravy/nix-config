@@ -52,7 +52,6 @@ in
 
     Service = {
       Type = "simple";
-      Environment = [ "XDG_CONFIG_HOME=${configDir}" ];
       ExecStart = "${pkgs.filen-cli}/bin/filen sync --continuous";
       Restart = "on-failure";
       RestartSec = 10;
