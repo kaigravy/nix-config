@@ -91,8 +91,4 @@ in
   home.sessionVariables = {
     _ZO_DATA_DIR = "${configDir}/zoxide";
   };
-
-  # Symlink .config to config so systemd can find user services
-  # Systemd looks in ~/.config even when XDG_CONFIG_HOME is set differently
-  home.file.".config".source = config.lib.file.mkOutOfStoreSymlink configDir;
 }
