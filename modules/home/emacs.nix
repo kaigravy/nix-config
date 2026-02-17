@@ -48,9 +48,9 @@ in
   };
 
   # Persist Doom Emacs installation and packages
-  home.persistence."/persist/users/kai" = lib.mkIf config.home.evict.enable {
+  home.persistence."/persist" = lib.mkIf config.home.evict.enable {
     directories = [
-      "config/emacs"  # Doom Emacs installation at /users/kai/config/emacs
+      "${config.home.evict.configDirName}/emacs"  # Doom Emacs installation at /users/kai/config/emacs
     ];
   };
 }

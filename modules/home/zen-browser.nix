@@ -13,9 +13,9 @@
 
   # Browser data will be at /users/kai/config/zen (ephemeral by default)
   
-  home.persistence."/persist/users/kai" = lib.mkIf config.home.evict.enable {
+  home.persistence."/persist" = lib.mkIf config.home.evict.enable {
     directories = [
-      "config/zen"  # Persists /users/kai/config/zen
+      "${config.home.evict.configDirName}/zen"  # Persists /users/kai/config/zen
     ];
   };
 }
