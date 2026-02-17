@@ -25,9 +25,14 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-browser = {
+      url = "github:caiogeraldes/zen-browser-flake-1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, zen-browser, ... }@inputs: {
     nixosConfigurations = {
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";

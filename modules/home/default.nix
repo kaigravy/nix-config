@@ -9,6 +9,7 @@
     ./filen.nix
     ./emacs.nix
     ./kitty.nix
+    ./zen-browser.nix
   ];
 
   home = {
