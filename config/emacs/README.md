@@ -8,44 +8,48 @@ This directory contains the declarative Doom Emacs configuration for this NixOS 
 - `doom/config.el` - Your personal configuration
 - `doom/packages.el` - Additional packages to install
 
-## What is Doom Emacs?
+## How it works
 
-Doom Emacs is a configuration framework for Emacs that provides:
-- Pre-configured modules for various languages and tools
-- Vim keybindings (Evil mode) by default
-- Modern, fast UI with sensible defaults
-- Extensive package ecosystem
-- Great documentation
+- **Emacs** is installed via Nix (see `modules/home/emacs.nix`)
+- **Doom config** (`doom/` directory) is symlinked to `~/.config/doom` (or `/users/kai/config/doom` with evict)
+- **Doom itself** (`~/.config/emacs`) is persisted across reboots using impermanence
+- Doom manages its own packages and installation declaratively through its own config files
 
 ## Installation Location
 
-- **Doom install**: `/users/kai/home/.emacs.d/` (persistent)
-- **Doom config**: `/users/kai/config/doom/` (ephemeral, generated from flake)
-- **Doom data**: `/users/kai/home/.local/share/doom/` (persistent)
+- **Doom install**: `~/.config/emacs` (persistent via impermanence)
+- **Doom config**: `/users/kai/config/doom/` (symlinked from this repo)
+- **Doom data**: `~/.local/share/doom/` (created by Doom)
 
-## First Run
+## First-time setup
 
-After rebuilding your system:
+After rebuilding your NixOS configuration:
 
-```bash
-sudo nixos-rebuild switch --flake /workspaces/nix-config#vm
-```
+1. Install Doom Emacs:
+   ```bash
+   git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+   ~/.config/emacs/bin/doom install
+   ```
 
-The first time, Doom will automatically:
-1. Clone the Doom Emacs repository
-2. Install all configured packages
-3. Compile everything for fast startup
+2. Add Doom's bin to your PATH (optional, for CLI tools):
+   ```bash
+   export PATH="$HOME/.config/emacs/bin:$PATH"
+   ```
 
-Then you can launch Emacs with:
-```bash
-emacs
-```
+## Making changes
 
-Or use the Doom CLI:
+1. Edit config files in this repo (`config/emacs/doom/`)
+2. Commit and rebuild your NixOS config to sync changes to `~/.config/doom`
+3. Run `doom sync` to apply changes to Doom
+4. Restart Emacs or run `M-x doom/reload` inside Emacs
+
+## Useful Doom Commands
+
 ```bash
 doom doctor    # Check for issues
-doom sync      # Update packages
+doom sync      # Sync packages after config changes
 doom upgrade   # Upgrade Doom itself
+doom build     # Rebuild Doom
 ```
 
 ## Key Features Enabled

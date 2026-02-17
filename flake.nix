@@ -25,14 +25,9 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    nix-doom-emacs = {
-      url = "github:marienz/nix-doom-emacs-unstraightened";
-      inputs.nixpkgs.follows = ""; # Downloads less; actual package doesn't follow nixpkgs
-    };
   };
 
-  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, nix-doom-emacs, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, ... }@inputs: {
     nixosConfigurations = {
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
