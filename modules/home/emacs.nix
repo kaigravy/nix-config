@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
 
 let
-  # Use the persistent home directory for Doom installation
-  homeDir = "${config.home.homeDirectory}/${config.home.evict.homeDirName}";
-  doomDir = "${config.home.homeDirectory}/${config.home.evict.configDirName}/doom";
-  emacsDir = "${homeDir}/.emacs.d";
+  # Use config directory for both Doom config and installation
+  configDir = "${config.home.homeDirectory}/${config.home.evict.configDirName}";
+  doomDir = "${configDir}/doom";
+  emacsDir = "${configDir}/emacs";
 in
 {
   # Install Emacs
@@ -34,10 +34,10 @@ in
     emacs-all-the-icons-fonts
   ];
 
-  # Set environment variables so Doom uses persistent locations
+  # Set environment variables so Doom uses config locations
   home.sessionVariables = {
     DOOMDIR = doomDir;        # Config location: /users/kai/config/doom
-    EMACSDIR = emacsDir;      # Install location: /users/kai/home/.emacs.d
+    EMACSDIR = emacsDir;      # Install location: /users/kai/config/emacs
   };
 
   # Symlink Doom config from this repo to /users/kai/config/doom (via XDG_CONFIG_HOME)
@@ -47,12 +47,10 @@ in
     recursive = true;
   };
 
-  # Persist Doom Emacs installation and packages in the home directory
-  # With evict: config is ephemeral, home is persistent
+  # Persist Doom Emacs installation and packages
   home.persistence."/persist/users/kai" = lib.mkIf config.home.evict.enable {
     directories = [
-      "home/.emacs.d"  # Doom Emacs itself and installed packages
+      "config/emacs"  # Doom Emacs installation at /users/kai/config/emacs
     ];
-    allowOther = true;
   };
 }
