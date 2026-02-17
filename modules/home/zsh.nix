@@ -46,7 +46,7 @@ in
         "command-not-found"
         "dirhistory"
       ];
-      # Spaceship theme is installed separately below
+      theme = "robbyrussell";
     };
 
     # Additional init commands
@@ -62,8 +62,8 @@ in
       # Add Doom Emacs to PATH (using actual evict config path)
       export PATH="${configDir}/emacs/bin:$PATH"
       
-      # Spaceship prompt configuration
-      source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
+      # Load spaceship prompt (after Oh-My-Zsh)
+      fpath+=${pkgs.spaceship-prompt}/share/zsh/site-functions
       autoload -U promptinit; promptinit
       prompt spaceship
     '';
