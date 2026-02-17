@@ -27,7 +27,7 @@
     };
 
     zen-browser = {
-      url = "github:caiogeraldes/zen-browser-flake-1";
+      url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
