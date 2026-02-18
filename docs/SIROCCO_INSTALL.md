@@ -35,22 +35,63 @@ The ISO file will be something like `nixos-25.11-x86_64-linux.iso`.
 lsblk
 
 # Flash the ISO (replace /dev/sdX with your USB drive)
-sudo dd if=result/iso/nixos-*.iso of=/dev/sdX bs=4M status=progress oflag=sync
+sudo dd if=result/iso/nixos-*.iso of=/dev/sdX bs=4M status=progress oflag=sync conv=fsync
+
+# Verify the write was successful
+sudo sync
+```
+
+**Alternative method if dd doesn't work:**
+
+```bash
+# Using Ventoy (more reliable for UEFI boot)
+# Or use a GUI tool like Etcher, Rufus (Windows), or balenaEtcher
+
+# Or use cp (simpler, sometimes more reliable)
+sudo cp result/iso/nixos-*.iso /dev/sdX
+sudo sync
+```
+
+### Verify the ISO Built Correctly
+
+Before flashing, check the ISO was built successfully:
+
+```bash
+# Check the ISO file exists and has reasonable size (should be 2-3 GB)
+ls -lh result/iso/
+
+# Verify it's a valid ISO9660 filesystem
+file result/iso/nixos-*.iso
+
+# Expected output: "ISO 9660 CD-ROM filesystem data..."
 ```
 
 ## Step 2: Boot from the USB Drive
 
 1. Insert the USB drive into your desktop
 2. Reboot and enter BIOS/UEFI (usually F2, F12, or DEL)
-3. Set boot mode to UEFI (not Legacy/CSM)
-4. Boot from the USB drive
+3. **Important BIOS settings:**
+   - Set boot mode to **UEFI** (not Legacy/CSM/BIOS)
+   - Disable Secure Boot (if enabled)
+   - Set USB boot priority to first
+4. Save BIOS settings and boot from the USB drive
+
+**If you see a blinking cursor:**
+- Try pressing ESC or Space during boot to see if bootloader menu appears
+- Check BIOS boot order - make sure USB is first
+- Try a different USB port (USB 2.0 ports sometimes work better than 3.0)
+- Verify UEFI mode is enabled (not Legacy BIOS)
+- Try re-flashing the USB drive with a different tool
 
 ## Step 3: Connect to Wi-Fi
 
 Once booted into the graphical installer:
 
 ```bash
-# The Wi-Fi card should be recognized automatically
+# First, manually load the Broadcom Wi-Fi driver
+# (It's not auto-loaded to prevent boot issues)
+sudo modprobe wl
+
 # Check if the wireless interface is detected
 ip link show
 
@@ -192,6 +233,54 @@ sudo nixos-rebuild switch --flake .#sirocco
 ```
 
 ## Troubleshooting
+
+### Blinking Cursor / Black Screen on Boot
+
+If you see only a blinking cursor after installation:
+
+**This is usually caused by the "silent boot" hiding error messages.** Temporarily disable it:
+
+```bash
+# Boot from the installer USB again
+# Mount your system
+sudo cryptsetup luksOpen /dev/sda2 cryptroot  # or your LUKS partition
+sudo mount /dev/mapper/cryptroot /mnt -t btrfs -o subvol=@root
+sudo mount /dev/sda1 /mnt/boot  # ESP partition
+sudo mount /dev/mapper/cryptroot /mnt/nix -t btrfs -o subvol=@nix
+sudo mount /dev/mapper/cryptroot /mnt/persist -t btrfs -o subvol=@persist
+
+# Enter the system
+sudo nixos-enter --root /mnt
+
+# Temporarily disable silent boot to see errors
+# Edit /persist/users/kai/nix-config/modules/nixos/boot.nix or add to hosts/sirocco/hardware.nix:
+cat >> /persist/users/kai/nix-config/hosts/sirocco/hardware.nix << 'EOF'
+
+  # DEBUG: Disable silent boot to see errors
+  boot.plymouth.enable = lib.mkForce false;
+  boot.consoleLogLevel = lib.mkForce 7;
+  boot.initrd.verbose = lib.mkForce true;
+  boot.kernelParams = lib.mkForce [];
+  boot.loader.timeout = lib.mkForce 5;
+EOF
+
+# Rebuild
+cd /persist/users/kai/nix-config
+nixos-rebuild boot --flake .#sirocco
+
+# Exit and reboot
+exit
+sudo reboot
+```
+
+Now you'll see verbose boot messages showing what's failing.
+
+**Common causes:**
+1. **Wrong disk device** in `disks.nix` - verify it's actually `/dev/sda`
+2. **ESP not mounted** - check `/boot` has files after install
+3. **Bootloader not installed** - check `/boot/EFI/systemd` exists
+4. **NVIDIA driver issues** - try booting with `nomodeset` kernel parameter
+5. **Wrong BIOS mode** - ensure UEFI mode is enabled, not Legacy/CSM
 
 ### Wi-Fi Not Working
 

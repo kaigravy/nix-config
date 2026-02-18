@@ -16,7 +16,9 @@
   # Enable Wi-Fi support for ASUS PCE-AC68 (Broadcom BCM4360)
   hardware.enableRedistributableFirmware = true;
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-  boot.kernelModules = [ "wl" ];
+  # Don't auto-load wl module at boot - load it manually after boot if needed
+  # This prevents boot issues if the driver conflicts with hardware detection
+  # boot.kernelModules = [ "wl" ];
   # Blacklist conflicting open-source drivers
   boot.blacklistedKernelModules = [ "b43" "bcma" "ssb" "brcmsmac" "brcmfmac" ];
   
