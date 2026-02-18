@@ -61,7 +61,6 @@ in
       
       # Load spaceship prompt last
       source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
-      spaceship_vi_mode_enable
     '';
   };
 
@@ -70,7 +69,7 @@ in
     enable = true;
     enableZshIntegration = true;
     options = [
-      "--cmd cd"  # Use 'cd' instead of 'z' for familiarity
+      #"--cmd cd"  # Use 'cd' instead of 'z' for familiarity
     ];
   };
 
