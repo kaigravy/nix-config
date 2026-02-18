@@ -17,6 +17,12 @@ let
       mode = "twoWay";
       syncMode = "twoWay";
     }
+    {
+      local = "${configDir}/zoxide";
+      remote = "/.sync/zoxide";
+      mode = "twoWay";
+      syncMode = "twoWay";
+    }
   ];
 in
 {
@@ -52,7 +58,6 @@ in
 
     Service = {
       Type = "simple";
-      Environment = [ "XDG_CONFIG_HOME=${configDir}" ];
       ExecStart = "${pkgs.filen-cli}/bin/filen sync --continuous";
       Restart = "on-failure";
       RestartSec = 10;

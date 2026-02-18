@@ -4,8 +4,13 @@
   imports = [
     inputs.evict.homeManagerModules.evict
     ./shell.nix
+    ./zsh.nix
+    ./fonts.nix
     ./git.nix
     ./filen.nix
+    ./emacs.nix
+    ./kitty.nix
+    ./zen-browser.nix
   ];
 
   home = {

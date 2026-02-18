@@ -1,0 +1,21 @@
+{ inputs, pkgs, config, lib, ... }:
+
+{
+  home.packages = [
+    inputs.zen-browser.packages.${pkgs.system}.default
+  ];
+
+  # Set Zen browser profile directory to /users/kai/config/zen
+  home.sessionVariables = {
+    # Point Zen to use the config directory directly
+    MOZ_USER_DIR = "${config.home.homeDirectory}/${config.home.evict.configDirName}/zen";
+  };
+
+  # Browser data will be at /users/kai/config/zen (ephemeral by default)
+  
+  home.persistence."/persist" = lib.mkIf config.home.evict.enable {
+    directories = [
+      "${config.home.evict.configDirName}/zen"  # Persists /users/kai/config/zen
+    ];
+  };
+}
