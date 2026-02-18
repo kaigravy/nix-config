@@ -5,6 +5,9 @@
     "${modulesPath}/installer/cd-dvd/installation-cd-graphical-gnome.nix"
   ];
 
+  # Allow unfree packages (needed for Broadcom Wi-Fi driver)
+  nixpkgs.config.allowUnfree = true;
+
   # Enable Wi-Fi support for ASUS PCE-AC68 (Broadcom BCM4360)
   hardware.enableRedistributableFirmware = true;
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
