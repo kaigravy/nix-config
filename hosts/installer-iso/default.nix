@@ -13,14 +13,20 @@
     ];
   };
 
+  # NVIDIA: disable modesetting to prevent blank screen / flashing cursor on boot.
+  # The ISO has no NVIDIA driver, so the GPU must not attempt KMS.
+  # nomodeset forces the kernel to use a basic framebuffer (VESA/EFI) so GNOME
+  # can start via software rendering (llvmpipe).
+  boot.kernelParams = [ "nomodeset" ];
+  # Blacklist nouveau so it doesn't partially init the GPU and hang.
+  boot.blacklistedKernelModules = [ "nouveau" "b43" "bcma" "ssb" "brcmsmac" "brcmfmac" ];
+
   # Enable Wi-Fi support for ASUS PCE-AC68 (Broadcom BCM4360)
   hardware.enableRedistributableFirmware = true;
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
   # Don't auto-load wl module at boot - load it manually after boot if needed
   # This prevents boot issues if the driver conflicts with hardware detection
   # boot.kernelModules = [ "wl" ];
-  # Blacklist conflicting open-source drivers
-  boot.blacklistedKernelModules = [ "b43" "bcma" "ssb" "brcmsmac" "brcmfmac" ];
   
   # Enable NetworkManager for easy Wi-Fi setup
   networking.networkmanager.enable = true;
