@@ -54,9 +54,9 @@ in
     # Spaceship prompt
     plugins = [
       {
-        name = "zsh-async";
-        src = pkgs.zsh-async;
-        file = "share/zsh-async/async.zsh";
+        name = "zsh-autocomplete";
+        src = pkgs.zsh-autocomplete;
+        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
       }
       {
         name = "spaceship-prompt";
