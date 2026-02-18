@@ -57,9 +57,8 @@
   console.font = "Lat2-Terminus16";
   console.keyMap = "us";
   
-  # Include this flake in the ISO for easy installation
-  # You can also clone from GitHub, but this is convenient
-  isoImage.includeSystemBuildDependencies = true;
+  # Don't bloat the ISO with build dependencies - clone from GitHub instead
+  isoImage.includeSystemBuildDependencies = false;
   
   system.stateVersion = "25.11";
 }
