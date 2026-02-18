@@ -7,6 +7,12 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  # Allow unfree and insecure packages for hardware drivers
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "broadcom-sta"  # Required for ASUS PCE-AC68 Wi-Fi card
+  ];
+
   # Intel i7-4770 (Haswell architecture)
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "sd_mod" ];
   boot.kernelModules = [ "kvm-intel" "wl" ];  # KVM virtualization + Broadcom Wi-Fi
