@@ -54,6 +54,16 @@ in
     # Spaceship prompt
     plugins = [
       {
+        name = "zsh-async";
+        src = pkgs.fetchFromGitHub {
+          owner = "mafredri";
+          repo = "zsh-async";
+          rev = "v1.8.6";
+          sha256 = "sha256-1t8i4HNXI+g9fq7+mj7W9lFGm7r4MQKUNfBkP3GbzC0=";
+        };
+        file = "async.zsh";
+      }
+      {
         name = "zsh-autocomplete";
         src = pkgs.zsh-autocomplete;
         file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
