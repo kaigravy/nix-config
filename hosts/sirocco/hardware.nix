@@ -9,7 +9,7 @@
 
   # Intel i7-4770 (Haswell architecture)
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "sd_mod" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-intel" "wl" ];  # KVM virtualization + Broadcom Wi-Fi
   
   # NVIDIA GTX 1070 support
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -30,7 +30,6 @@
   # This card uses the broadcom-sta driver (wl)
   hardware.enableRedistributableFirmware = true;
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-  boot.kernelModules = [ "wl" ];
   # Blacklist conflicting open-source drivers
   boot.blacklistedKernelModules = [ "b43" "bcma" "ssb" "brcmsmac" "brcmfmac" ];
   
