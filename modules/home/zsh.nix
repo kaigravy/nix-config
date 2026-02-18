@@ -37,7 +37,7 @@ in
       #update = "cd /workspaces/nix-config && nix flake update && sudo nixos-rebuild switch --flake .#vm";
     };
 
-    # Plugins - load autocomplete first
+    # Plugins
     plugins = [
       {
         name = "zsh-autocomplete";
@@ -46,7 +46,7 @@ in
       }
     ];
 
-    # Additional init commands - load spaceship AFTER everything else
+    # Additional init commands
     initExtra = ''
       # Better history search with arrow keys
       bindkey "^[[A" history-beginning-search-backward
@@ -58,13 +58,13 @@ in
       
       # Add Doom Emacs to PATH (using actual evict config path)
       export PATH="${configDir}/emacs/bin:$PATH"
-      
-      # Disable spaceship async to avoid "no async worker" error
-      export SPACESHIP_PROMPT_ASYNC=false
-      
-      # Load spaceship prompt last
-      source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
     '';
+  };
+
+  # Starship prompt
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   # Zoxide - smarter cd command
