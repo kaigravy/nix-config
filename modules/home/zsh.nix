@@ -37,7 +37,16 @@ in
       #update = "cd /workspaces/nix-config && nix flake update && sudo nixos-rebuild switch --flake .#vm";
     };
 
-    # Additional init commands
+    # Plugins - load autocomplete first
+    plugins = [
+      {
+        name = "zsh-autocomplete";
+        src = pkgs.zsh-autocomplete;
+        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
+      }
+    ];
+
+    # Additional init commands - load spaceship AFTER everything else
     initExtra = ''
       # Better history search with arrow keys
       bindkey "^[[A" history-beginning-search-backward
@@ -49,31 +58,11 @@ in
       
       # Add Doom Emacs to PATH (using actual evict config path)
       export PATH="${configDir}/emacs/bin:$PATH"
+      
+      # Load spaceship prompt last
+      source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
+      spaceship_vi_mode_enable
     '';
-
-    # Spaceship prompt
-    plugins = [
-      {
-        name = "zsh-async";
-        src = pkgs.fetchFromGitHub {
-          owner = "mafredri";
-          repo = "zsh-async";
-          rev = "v1.8.6";
-          sha256 = "sha256-1t8i4HNXI+g9fq7+mj7W9lFGm7r4MQKUNfBkP3GbzC0=";
-        };
-        file = "async.zsh";
-      }
-      {
-        name = "zsh-autocomplete";
-        src = pkgs.zsh-autocomplete;
-        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
-      }
-      {
-        name = "spaceship-prompt";
-        src = pkgs.spaceship-prompt;
-        file = "share/zsh/site-functions/prompt_spaceship_setup";
-      }
-    ];
   };
 
   # Zoxide - smarter cd command
