@@ -54,6 +54,11 @@ in
     # Spaceship prompt
     plugins = [
       {
+        name = "zsh-async";
+        src = pkgs.zsh-async;
+        file = "share/zsh-async/async.zsh";
+      }
+      {
         name = "spaceship-prompt";
         src = pkgs.spaceship-prompt;
         file = "share/zsh/site-functions/prompt_spaceship_setup";
