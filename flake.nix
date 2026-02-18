@@ -45,6 +45,25 @@
           ./hosts/vm
         ];
       };
+      
+      sirocco = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
+          home-manager.nixosModules.home-manager
+          sops-nix.nixosModules.sops
+          ./hosts/sirocco
+        ];
+      };
+      
+      installer-iso = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/installer-iso
+        ];
+      };
     };
   };
 }

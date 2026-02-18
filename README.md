@@ -7,15 +7,30 @@ NixOS configuration with btrfs, LUKS encryption, impermanence, and declarative d
 | Host | Description | Status |
 |------|-------------|--------|
 | `vm` | QEMU/KVM test VM | Active |
-| `desktop` | Desktop workstation | Planned |
-| `laptop` | Laptop | Planned |
+| `sirocco` | Desktop workstation (i7-4770, GTX 1070, ASUS PCE-AC68 Wi-Fi) | Ready |
+| `installer-iso` | Custom NixOS installer with Wi-Fi drivers | ISO builder |
 
 ## Install
 
 ### Prerequisites
 
 - Boot the [NixOS 25.11 graphical ISO](https://nixos.org/download/)
+  - **For sirocco (desktop with ASUS PCE-AC68 Wi-Fi)**: Build and use the custom installer ISO (see below)
 - Connect to the internet
+
+### Building Custom Installer ISO (for sirocco)
+
+The ASUS PCE-AC68 Wi-Fi card requires proprietary Broadcom drivers not included in the standard NixOS ISO.
+
+```bash
+# Build the custom ISO with Wi-Fi drivers
+nix build .#nixosConfigurations.installer-iso.config.system.build.isoImage
+
+# Flash to USB drive (replace /dev/sdX with your USB device)
+sudo dd if=result/iso/nixos-*.iso of=/dev/sdX bs=4M status=progress oflag=sync
+```
+
+See [`docs/SIROCCO_INSTALL.md`](docs/SIROCCO_INSTALL.md) for detailed installation instructions for the desktop.
 
 ### Steps
 
@@ -117,12 +132,21 @@ See `secrets/README.md` for detailed instructions.
 ```
 ├── flake.nix                     # Entry point
 ├── install.sh                    # One-command installer
+├── docs/
+│   ├── SIROCCO_INSTALL.md        # Desktop installation guide
+│   └── FILEN_SETUP.md            # Filen sync setup
 ├── hosts/
 │   ├── common/default.nix        # Shared configuration
-│   └── vm/
-│       ├── default.nix           # VM-specific config
-│       ├── disks.nix             # Disk layout (disko)
-│       └── hardware.nix          # Hardware config
+│   ├── installer-iso/            # Custom installer with Wi-Fi drivers
+│   │   └── default.nix
+│   ├── vm/
+│   │   ├── default.nix           # VM-specific config
+│   │   ├── disks.nix             # Disk layout (disko)
+│   │   └── hardware.nix          # Hardware config
+│   └── sirocco/                  # Desktop configuration
+│       ├── default.nix
+│       ├── disks.nix             # 1TB SSD layout
+│       └── hardware.nix          # NVIDIA + Wi-Fi drivers
 ├── modules/
 │   ├── nixos/                    # System modules
 │   │   ├── boot.nix              # Bootloader + btrfs rollback
@@ -132,12 +156,14 @@ See `secrets/README.md` for detailed instructions.
 │   │   ├── locale.nix            # Timezone + i18n
 │   │   ├── networking.nix        # Network config
 │   │   ├── nix-settings.nix      # Nix daemon settings
+│   │   ├── sops.nix              # Secret management
 │   │   └── users.nix             # User accounts
 │   └── home/                     # Home-manager modules
 │       ├── default.nix           # Base home config
+│       ├── filen.nix             # Filen cloud sync
 │       ├── git.nix               # Git
 │       └── shell.nix             # Shell environment
-└── overlays/
+└── secrets/                      # SOPS encrypted secrets
 ```
 
 ## Adding a new host
