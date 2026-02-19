@@ -23,5 +23,12 @@
         timeshift
         pairdrop
         rustdesk
+        zint-qt
+        kdePackages.okular
+        shotcut
+        blanket
+        wordbook
+        gnome-solanum
+        anki
     ];
 }

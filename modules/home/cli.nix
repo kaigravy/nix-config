@@ -35,6 +35,7 @@
     localtunnel
     trash-cli
     htop
+    neovim
   ];
 
   # Persist Trash so deleted files survive impermanence wipes
