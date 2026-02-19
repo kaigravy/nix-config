@@ -33,6 +33,13 @@
   };
 
   outputs = { self, nixpkgs, disko, impermanence, home-manager, evict, sops-nix, zen-browser, ... }@inputs: {
+    diskoConfigurations = {
+      vm        = import ./hosts/vm/disks.nix;
+      sirocco   = import ./hosts/sirocco/disks.nix;
+      mistral   = import ./hosts/mistral/disks.nix;
+      mistral-vm = import ./hosts/mistral/disks.nix;
+    };
+
     nixosConfigurations = {
       vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -74,6 +81,32 @@
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
           ./hosts/mistral
+        ];
+      };
+
+      # mistral config with NVIDIA overridden for VM testing
+      mistral-vm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
+          home-manager.nixosModules.home-manager
+          sops-nix.nixosModules.sops
+          ./hosts/mistral
+          ({ lib, ... }: {
+            # No NVIDIA hardware in a VM — use the generic modesetting driver
+            services.xserver.videoDrivers = lib.mkForce [ "modesetting" ];
+            hardware.nvidia.modesetting.enable = lib.mkForce false;
+            hardware.nvidia.powerManagement.enable = lib.mkForce false;
+            hardware.nvidia.powerManagement.finegrained = lib.mkForce false;
+            hardware.nvidia.prime.offload.enable = lib.mkForce false;
+            hardware.nvidia.prime.offload.enableOffloadCmd = lib.mkForce false;
+            # Re-enable power-profiles-daemon since TLP is for real hardware
+            services.power-profiles-daemon.enable = lib.mkForce true;
+            services.tlp.enable = lib.mkForce false;
+            services.thermald.enable = lib.mkForce false;
+          })
         ];
       };
       
