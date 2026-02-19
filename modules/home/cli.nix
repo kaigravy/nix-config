@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   home.packages = with pkgs; [
@@ -33,5 +33,11 @@
     radio-active
     fzf
     localtunnel
+    trash-cli
   ];
+
+  # Persist Trash so deleted files survive impermanence wipes
+  home.persistence."/persist" = {
+    directories = [ ".local/share/Trash" ];
+  };
 }
