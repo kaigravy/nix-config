@@ -69,6 +69,9 @@
   # thermald manages CPU temperature on Intel laptops
   services.thermald.enable = true;
 
+  # GNOME enables power-profiles-daemon by default, which conflicts with TLP.
+  services.power-profiles-daemon.enable = false;
+
   # TLP for battery charge management and radio power saving
   services.tlp = {
     enable = true;
