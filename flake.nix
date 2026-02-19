@@ -106,6 +106,9 @@
             services.power-profiles-daemon.enable = lib.mkForce true;
             services.tlp.enable = lib.mkForce false;
             services.thermald.enable = lib.mkForce false;
+            # VM disk is virtio — real hardware uses nvme, but virtio modules
+            # are needed in the initrd or the disk won't be visible during boot
+            boot.initrd.availableKernelModules = [ "virtio_pci" "virtio_blk" "xhci_pci" "usbhid" "sd_mod" ];
           })
         ];
       };
