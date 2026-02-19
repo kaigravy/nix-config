@@ -9,11 +9,6 @@
 
   networking.hostName = "mistral";
 
-  boot.initrd.luks.devices."cryptroot" = {
-    device = "/dev/disk/by-partlabel/disk-main-luks";
-    allowDiscards = true;
-  };
-
   # ── 4K display — GNOME HiDPI ──────────────────────────────────────────────
   # Integer 2× scaling is the sharpest option for a 15.6" 4K panel; enable the
   # mutter experimental feature so GNOME also exposes fractional options
