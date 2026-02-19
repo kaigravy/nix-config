@@ -28,6 +28,9 @@
     "xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod"
   ];
   boot.kernelModules = [ "kvm-intel" ];
+  # Blacklist nouveau — it conflicts with the proprietary NVIDIA driver and
+  # causes kernel NULL pointer dereferences (nvkm_gr_units) on Wayland startup.
+  boot.blacklistedKernelModules = [ "nouveau" ];
 
   # ── CPU microcode ─────────────────────────────────────────────────────────
   hardware.cpu.intel.updateMicrocode =
