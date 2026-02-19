@@ -11,7 +11,7 @@
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
-      "broadcom-sta"  # Required for ASUS PCE-AC68 Wi-Fi card
+      "broadcom-sta-6.30.223.271"  # Required for ASUS PCE-AC68 Wi-Fi card
     ];
   };
 
