@@ -3,6 +3,7 @@
 {
   imports = [
     inputs.evict.homeManagerModules.evict
+    ./cli.nix
     ./shell.nix
     ./zsh.nix
     ./fonts.nix
