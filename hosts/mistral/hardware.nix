@@ -44,6 +44,9 @@
     enable32Bit = true;   # needed for Vulkan / Steam compatibility
   };
 
+  # Required for NVIDIA driver 560+ to function correctly on Wayland
+  boot.kernelParams = [ "nvidia_drm.fbdev=1" ];
+
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement = {
