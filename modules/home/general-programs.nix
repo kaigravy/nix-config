@@ -22,7 +22,7 @@
         soundconverter
         timeshift
         pairdrop
-        rustdesk
+        rustdesk-flutter
         zint-qt
         kdePackages.okular
         shotcut
