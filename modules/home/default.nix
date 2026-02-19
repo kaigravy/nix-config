@@ -4,6 +4,7 @@
   imports = [
     inputs.evict.homeManagerModules.evict
     ./cli.nix
+    ./general-programs.nix
     ./shell.nix
     ./zsh.nix
     ./fonts.nix
