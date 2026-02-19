@@ -8,9 +8,7 @@
   # Allow unfree and insecure packages (needed for Broadcom Wi-Fi driver)
   nixpkgs.config = {
     allowUnfree = true;
-    permittedInsecurePackages = [
-      "broadcom-sta-6.30.223.271"
-    ];
+    allowInsecurePredicate = pkg: lib.getName pkg == "broadcom-sta";
   };
 
   # NVIDIA: disable modesetting to prevent blank screen / flashing cursor on boot.

@@ -55,14 +55,13 @@
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
           ./hosts/sirocco
-          {
-            # broadcom-sta (ASUS PCE-AC68) is marked insecure/broken in nixpkgs.
-            # These must be set at the flake level so they apply during evaluation,
-            # not just in the built system's closure.
+          ({ lib, ... }: {
+            # broadcom-sta (ASUS PCE-AC68) is marked insecure in nixpkgs.
+            # Use a predicate so we don't need to hard-code the exact version string.
             nixpkgs.config.allowUnfree = true;
-            nixpkgs.config.allowBroken = true;
-            nixpkgs.config.permittedInsecurePackages = [ "broadcom-sta-6.30.223.271" ];
-          }
+            nixpkgs.config.allowInsecurePredicate = pkg:
+              lib.getName pkg == "broadcom-sta";
+          })
         ];
       };
 
