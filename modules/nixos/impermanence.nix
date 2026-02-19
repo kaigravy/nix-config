@@ -6,6 +6,8 @@
     directories = [
       "/var/lib/nixos"
       "/var/lib/systemd"
+      "/var/lib/AccountsService"
+      "/var/lib/gdm"
       "/var/log"
       "/etc/NetworkManager/system-connections"
     ];
