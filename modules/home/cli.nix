@@ -34,6 +34,7 @@
     fzf
     localtunnel
     trash-cli
+    htop
   ];
 
   # Persist Trash so deleted files survive impermanence wipes
