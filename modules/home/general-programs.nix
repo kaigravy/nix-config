@@ -30,5 +30,7 @@
         wordbook
         gnome-solanum
         anki
+	gImageReader
     ];
 }
+
