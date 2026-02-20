@@ -31,6 +31,8 @@
         gnome-solanum
         anki
 	gImageReader
+	picard
+	virtualbox
     ];
 }
 

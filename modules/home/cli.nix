@@ -36,6 +36,21 @@
     trash-cli
     htop
     neovim
+    tmux
+    zellij
+    btop
+    up
+    astroterm
+    bit-logo
+    meteor-git
+    serie
+    tailspin
+    bibiman
+    wordgrinder
+    lue
+    ne
+    tetris
+    sc
   ];
 
   # Persist Trash so deleted files survive impermanence wipes
