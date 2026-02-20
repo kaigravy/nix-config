@@ -11,6 +11,7 @@
     ../../modules/nixos/locale.nix
     ../../modules/nixos/nix-settings.nix
     ../../modules/nixos/sops.nix
+    ../../modules/nixos/ssh.nix
   ];
 
   home-manager = {

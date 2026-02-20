@@ -58,6 +58,35 @@ filen-cli-auth: |
 
 Save and exit. SOPS encrypts automatically.
 
+### Adding SSH keys
+
+SSH keys are also managed via sops. Open the file for editing:
+
+```bash
+sops secrets.yaml
+```
+
+Add (or extend) the `ssh` section:
+
+```yaml
+ssh:
+  id_ed25519: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    <paste your private key here>
+    -----END OPENSSH PRIVATE KEY-----
+  id_ed25519_pub: "ssh-ed25519 AAAA... kai@hostname"
+```
+
+Save and exit. On next reboot (with `age-keys.txt` present) the keys will appear
+at `/users/kai/.ssh/id_ed25519` and `/users/kai/.ssh/id_ed25519.pub`.
+
+**Bootstrap flow on a new machine:**
+
+1. Build and install as normal — the system works fine without SSH keys.
+2. Boot into the new install.
+3. Copy your `age-keys.txt` to `/persist/sops/age-keys.txt` (mode `0600`, owned by root).
+4. Reboot. sops decrypts the keys and places them in `~/.ssh/` automatically.
+
 ### 5. Rebuild system
 
 ```bash
@@ -90,9 +119,12 @@ sops updatekeys secrets.yaml
 
 1. **Age key**: Private key in `/persist/sops/age-keys.txt` (persists across reboots)
 2. **Encrypted storage**: `secrets.yaml` encrypted with your public key (safe to commit)
-3. **Runtime decryption**: sops-nix decrypts to `/run/secrets/` on boot
-4. **Deployment**: Home-manager symlinks to your config directory
-5. **Ephemeral**: Config dir wiped on reboot, secret auto-deployed each boot
+3. **Runtime decryption**: sops-nix decrypts secrets at boot via a systemd service
+4. **Direct placement**: SSH keys are written to `/users/kai/.ssh/` (persistent) at their
+   final paths — no symlinks needed
+5. **Other secrets**: Service credentials land in `/run/secrets/` (tmpfs, cleared on reboot)
+6. **Graceful degradation**: If `age-keys.txt` is absent the system boots normally;
+   secrets simply aren't populated until you add the key and reboot
 
 ## Security
 
