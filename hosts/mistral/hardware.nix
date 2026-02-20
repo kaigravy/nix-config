@@ -54,7 +54,7 @@
     modesetting.enable = true;
     powerManagement = {
       enable = true;         # suspend/resume the dGPU with the system
-      finegrained = false;   # RTD3 disabled — causes NULL ptr deref on Wayland startup
+      finegrained = true;   # RTD3 disabled — causes NULL ptr deref on Wayland startup
     };
     open = false;            # Turing (TU117) is NOT supported by the open kernel module
     nvidiaSettings = true;
