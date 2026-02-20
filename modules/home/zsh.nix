@@ -12,9 +12,8 @@ in
 
     completionInit = ''
       autoload -Uz compinit && compinit
-      zstyle ':completion:*' menu select          # navigable menu on Tab
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # case-insensitive
-      zstyle ':completion:*' list-colors ''       # coloured completions
+      zstyle ':completion:*' menu select
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
     '';
     
     # Don't set dotDir - we're managing paths explicitly via evict
