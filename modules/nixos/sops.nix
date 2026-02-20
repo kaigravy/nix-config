@@ -25,23 +25,24 @@
         mode = "0400";
       };
 
-      # SSH private key — written directly to ~/.ssh by sops at boot.
-      # Add to secrets.yaml with:
-      #   nix-shell -p sops --run "sops secrets/secrets.yaml"
-      # then paste your private key under the key path:
-      #   ssh/id_ed25519: |
-      #     -----BEGIN OPENSSH PRIVATE KEY-----
-      #     ...
-      #     -----END OPENSSH PRIVATE KEY-----
-      "ssh/id_ed25519" = {
-        path  = "/users/kai/.ssh/id_ed25519";
+      # SSH keys — written directly to ~/.ssh by sops at boot.
+      # Each key pair lives under a named sub-key in secrets.yaml:
+      #   ssh:
+      #     github: |
+      #       -----BEGIN OPENSSH PRIVATE KEY-----
+      #       ...
+      #       -----END OPENSSH PRIVATE KEY-----
+      #     github_pub: "ssh-ed25519 AAAA... kai@hostname"
+      # To add more key pairs in future, add another sub-key here and
+      # a matching entry in secrets.yaml (e.g. ssh/work, ssh/work_pub).
+      "ssh/github" = {
+        path  = "/users/kai/.ssh/github";
         owner = config.users.users.kai.name;
         mode  = "0600";
       };
 
-      # SSH public key
-      "ssh/id_ed25519_pub" = {
-        path  = "/users/kai/.ssh/id_ed25519.pub";
+      "ssh/github_pub" = {
+        path  = "/users/kai/.ssh/github.pub";
         owner = config.users.users.kai.name;
         mode  = "0644";
       };

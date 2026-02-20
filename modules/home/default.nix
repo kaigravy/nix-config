@@ -10,6 +10,7 @@
     ./fonts.nix
     ./git.nix
     ./filen.nix
+    ./ssh.nix
     ./emacs.nix
     ./kitty.nix
     ./zen-browser.nix
