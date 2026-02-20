@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 let
   configDir = "${config.home.homeDirectory}/${config.home.evict.configDirName}";
@@ -9,6 +9,13 @@ in
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+
+    completionInit = ''
+      autoload -Uz compinit && compinit
+      zstyle ':completion:*' menu select          # navigable menu on Tab
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # case-insensitive
+      zstyle ':completion:*' list-colors ''       # coloured completions
+    '';
     
     # Don't set dotDir - we're managing paths explicitly via evict
     # zsh will use the default ~/.zshrc location
@@ -39,15 +46,18 @@ in
 
     # Plugins
     plugins = [
-      {
-        name = "zsh-autocomplete";
-        src = pkgs.zsh-autocomplete;
-        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
-      }
     ];
 
     # Additional init commands
     initExtra = ''
+      # Menu-select navigation (arrow keys, Enter to confirm)
+      zmodload zsh/complist
+      bindkey -M menuselect '^[[A' up-line-or-history    # up arrow
+      bindkey -M menuselect '^[[B' down-line-or-history  # down arrow
+      bindkey -M menuselect '^[[D' backward-char         # left arrow
+      bindkey -M menuselect '^[[C' forward-char          # right arrow
+      bindkey -M menuselect '^M'   .accept-line          # Enter accepts & runs
+      
       # Better history search with arrow keys
       bindkey "^[[A" history-beginning-search-backward
       bindkey "^[[B" history-beginning-search-forward
