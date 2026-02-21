@@ -7,14 +7,13 @@ let
   emacsDir = "${configDir}/emacs";
 in
 {
-  # Install Emacs
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs30-pgtk; # Emacs 30 with pure GTK
-  };
-
-  # Install dependencies for Doom Emacs
+  # Install Emacs as a plain package — do NOT use programs.emacs.enable = true here.
+  # When enabled, home-manager writes its own init.el to $XDG_CONFIG_HOME/emacs/init.el,
+  # which is the same path as EMACSDIR (/users/kai/config/emacs), overwriting Doom's
+  # init.el and causing "void-variable doom-modules" on startup.
   home.packages = with pkgs; [
+    emacs30-pgtk # Emacs 30 with pure GTK
+
     # Core dependencies
     git
     (ripgrep.override { withPCRE2 = true; })
@@ -38,6 +37,20 @@ in
   home.sessionVariables = {
     DOOMDIR = doomDir;        # Config location: /users/kai/config/doom
     EMACSDIR = emacsDir;      # Install location: /users/kai/config/emacs
+  };
+
+  # Mirror into systemd user environment so the daemon service sees them too
+  # (same pattern used for XDG_CONFIG_HOME in shell.nix)
+  systemd.user.sessionVariables = {
+    DOOMDIR = doomDir;
+    EMACSDIR = emacsDir;
+  };
+
+  # Start Emacs as a daemon so emacsclient can connect to it
+  services.emacs = {
+    enable = true;
+    package = pkgs.emacs30-pgtk;
+    client.enable = true; # makes emacsclient available and sets EDITOR
   };
 
   # Add Doom's bin to PATH so 'doom sync', 'doom doctor', etc. work from any shell
