@@ -40,12 +40,30 @@ in
     EMACSDIR = emacsDir;      # Install location: /users/kai/config/emacs
   };
 
+  # Add Doom's bin to PATH so 'doom sync', 'doom doctor', etc. work from any shell
+  home.sessionPath = [ "${emacsDir}/bin" ];
+
   # Symlink Doom config from this repo to /users/kai/config/doom (via XDG_CONFIG_HOME)
   # This makes your Doom config declarative while letting Doom manage itself
   xdg.configFile."doom" = {
     source = ../../config/emacs/doom;
     recursive = true;
   };
+
+  # Auto-install Doom Emacs on first activation if it isn't already present.
+  # Subsequent rebuilds are a no-op (the binary already exists).
+  home.activation.installDoom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -f "${emacsDir}/bin/doom" ]; then
+      $VERBOSE_ECHO "Doom Emacs not found at ${emacsDir} — cloning and installing..."
+      ${pkgs.git}/bin/git clone --depth 1 https://github.com/doomemacs/doomemacs "${emacsDir}"
+      export DOOMDIR="${doomDir}"
+      export EMACSDIR="${emacsDir}"
+      export PATH="${pkgs.emacs30-pgtk}/bin:${pkgs.git}/bin:$PATH"
+      # --no-config: don't overwrite our declarative init.el/config.el/packages.el
+      # --no-env:    skip dumping env vars to $DOOMDIR/env (we handle that via Nix)
+      "${emacsDir}/bin/doom" install --no-config --no-env
+    fi
+  '';
 
   # Persist Doom Emacs installation and packages
   home.persistence."/persist" = lib.mkIf config.home.evict.enable {
