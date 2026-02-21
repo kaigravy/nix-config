@@ -56,7 +56,10 @@ in
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
-      Type = "notify";
+      # simple: systemd considers the service started as soon as the process launches.
+      # notify would require Emacs to signal readiness — if startup is slow (e.g. first
+      # load after doom sync), systemd times out and restarts, creating a loop.
+      Type = "simple";
       ExecStart = "${pkgs.emacs30-pgtk}/bin/emacs --fg-daemon";
       ExecStop = "${pkgs.emacs30-pgtk}/bin/emacsclient --no-wait --eval '(kill-emacs)'";
       Restart = "on-failure";
@@ -119,6 +122,8 @@ in
     ln -sfn "${../../config/emacs/doom/init.el}"     "${doomDir}/init.el"
     ln -sfn "${../../config/emacs/doom/config.el}"   "${doomDir}/config.el"
     ln -sfn "${../../config/emacs/doom/packages.el}" "${doomDir}/packages.el"
+    # Doom's snippets module expects this directory to exist even if empty
+    mkdir -p "${doomDir}/snippets"
   '';
 
   # Clone Doom Emacs on first activation if not already present.
