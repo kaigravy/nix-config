@@ -1,7 +1,7 @@
 # Dell Precision 5550 hardware configuration
 # CPU:  Intel Core i7-10850H (Comet Lake H, 6c/12t)
 # iGPU: Intel UHD Graphics 630
-# dGPU: NVIDIA Quadro T2000 Max-Q
+# dGPU: NVIDIA Quadro T1000 Mobile (TU117GLM, rev a1)
 # WiFi: Killer AX1650 (Intel AX200 chipset — iwlwifi, works out of the box)
 #
 # NVIDIA PRIME offload mode: iGPU drives the display; dGPU is available
@@ -12,7 +12,7 @@
 # Then update intelBusId / nvidiaBusId below (format: "PCI:<bus>:<slot>:<func>").
 # Typical values for the Precision 5550:
 #   Intel UHD 630  → 00:02.0  →  "PCI:0:2:0"
-#   NVIDIA T2000   → 01:00.0  →  "PCI:1:0:0"
+#   NVIDIA T1000   → 01:00.0  →  "PCI:1:0:0"
 { config, lib, pkgs, modulesPath, ... }:
 
 {
@@ -47,14 +47,16 @@
     enable32Bit = true;   # needed for Vulkan / Steam compatibility
   };
 
-  # Required for NVIDIA driver 560+ to function correctly on Wayland
-  boot.kernelParams = [ "nvidia_drm.fbdev=1" ];
+  # Required for NVIDIA driver 560+ to function correctly on Wayland.
+  # pcie_aspm=powersupersave: use the most aggressive ASPM link-power policy
+  # (kernel default is "default"; confirmed safe on this hardware via dmesg).
+  boot.kernelParams = [ "nvidia_drm.fbdev=1" "pcie_aspm=powersupersave" ];
 
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement = {
-      enable = true;         # suspend/resume the dGPU with the system
-      finegrained = true;   # RTD3 disabled — causes NULL ptr deref on Wayland startup
+      enable = true;        # suspend/resume the dGPU with the system
+      finegrained = true;   # RTD3 — allows dGPU to suspend at runtime when idle
     };
     open = false;            # Turing (TU117) is NOT supported by the open kernel module
     nvidiaSettings = true;
@@ -82,9 +84,29 @@
   services.tlp = {
     enable = true;
     settings = {
-      # Keep battery between 20–80 % to extend cell longevity
+      # ── Battery charge thresholds ────────────────────────────────────────
+      # Keep battery between 20–80 % to extend cell longevity.
       START_CHARGE_THRESH_BAT0 = 20;
       STOP_CHARGE_THRESH_BAT0  = 80;
+
+      # ── CPU ──────────────────────────────────────────────────────────────
+      # Use powersave governor on battery (enables HWP, lets the CPU boost
+      # when needed but idles at low frequency otherwise).
+      CPU_SCALING_GOVERNOR_ON_BAT  = "powersave";
+      CPU_SCALING_GOVERNOR_ON_AC   = "performance";
+      # Intel HWP energy/performance hint: "balance_power" on battery.
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      CPU_ENERGY_PERF_POLICY_ON_AC  = "balance_performance";
+
+      # ── WiFi ─────────────────────────────────────────────────────────────
+      # Intel iwlwifi supports runtime power management.
+      WIFI_PWR_ON_BAT = "on";
+      WIFI_PWR_ON_AC  = "off";
+
+      # ── USB autosuspend ──────────────────────────────────────────────────
+      # Suspend idle USB devices after 2 s; exclude input devices (mice,
+      # keyboards) so they don't become unresponsive.
+      USB_AUTOSUSPEND = 1;
     };
   };
 
