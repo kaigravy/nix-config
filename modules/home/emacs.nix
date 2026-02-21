@@ -49,6 +49,11 @@ in
   # Emacs daemon — written as a raw systemd unit rather than services.emacs because
   # services.emacs.enable = true implicitly sets programs.emacs.enable = mkDefault true,
   # which causes home-manager to write its own init.el over $EMACSDIR/init.el and break Doom.
+  #
+  # NOTE: We use --daemon (forks to background) not --fg-daemon (stays in foreground).
+  # emacs30-pgtk connects to the Wayland display when --fg-daemon is used and immediately
+  # exits if that connection is ever lost, causing an infinite restart loop.
+  # --daemon defers display connection until a client opens a frame, which is safe.
   systemd.user.services.emacs = {
     Unit = {
       Description = "Emacs daemon";
@@ -56,13 +61,13 @@ in
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
-      # simple: systemd considers the service started as soon as the process launches.
-      # notify would require Emacs to signal readiness — if startup is slow (e.g. first
-      # load after doom sync), systemd times out and restarts, creating a loop.
-      Type = "simple";
-      ExecStart = "${pkgs.emacs30-pgtk}/bin/emacs --fg-daemon";
+      Type = "forking";
+      ExecStart = "${pkgs.emacs30-pgtk}/bin/emacs --daemon";
       ExecStop = "${pkgs.emacs30-pgtk}/bin/emacsclient --no-wait --eval '(kill-emacs)'";
       Restart = "on-failure";
+      RestartSec = "5s";
+      StartLimitBurst = 3;
+      StartLimitIntervalSec = "30s";
       # Env vars must be set explicitly here; systemd user services don't
       # automatically inherit sessionVariables set by home-manager.
       Environment = [
