@@ -76,13 +76,18 @@ in
   # Run 'doom install' once, asynchronously, the first time the user logs in.
   # This avoids blocking nixos-rebuild activation (which caused timeouts) while
   # still ensuring Doom is fully set up before the daemon tries to use it.
+  # NOTE: We check for .local/straight, NOT bin/doom — bin/doom is part of the
+  # Doom git repo and exists right after clone, so it cannot be used as a
+  # "has doom install run?" sentinel. .local/straight is only created by doom install.
   systemd.user.services.doom-install = {
     Unit = {
       Description = "First-time Doom Emacs package install";
       # Run before the daemon so packages are ready when Emacs starts.
       Before = [ "emacs.service" ];
-      # Only run if the Doom binary is missing (i.e. not yet installed).
-      ConditionPathExists = "!${emacsDir}/bin/doom";
+      # Only run when doom install hasn't completed yet.
+      # Doom stores packages at DOOMLOCALDIR (~/.local/share/doom/straight), NOT inside
+      # EMACSDIR. bin/doom can't be used as a sentinel because it's in the cloned git repo.
+      ConditionPathExists = "!${config.home.homeDirectory}/.local/share/doom/straight";
     };
     Service = {
       Type = "oneshot";
@@ -103,12 +108,18 @@ in
   # Add Doom's bin to PATH so 'doom sync', 'doom doctor', etc. work from any shell
   home.sessionPath = [ "${emacsDir}/bin" ];
 
-  # Symlink Doom config from this repo to /users/kai/config/doom (via XDG_CONFIG_HOME)
-  # This makes your Doom config declarative while letting Doom manage itself
-  xdg.configFile."doom" = {
-    source = ../../config/emacs/doom;
-    recursive = true;
-  };
+  # Force-symlink Doom config files on every rebuild using ln -sfn, which overwrites
+  # any real files that may have been created by 'doom install' or 'doom sync' in a
+  # previous session. Using xdg.configFile.source is not reliable here because
+  # home-manager refuses to replace unmanaged files and silently skips them, leaving
+  # Doom to use whatever (default) config already exists at DOOMDIR.
+  home.activation.linkDoomConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $VERBOSE_ECHO "Linking Doom config files to ${doomDir}..."
+    mkdir -p "${doomDir}"
+    ln -sfn "${../../config/emacs/doom/init.el}"     "${doomDir}/init.el"
+    ln -sfn "${../../config/emacs/doom/config.el}"   "${doomDir}/config.el"
+    ln -sfn "${../../config/emacs/doom/packages.el}" "${doomDir}/packages.el"
+  '';
 
   # Clone Doom Emacs on first activation if not already present.
   # We do NOT run 'doom install' here — that blocks nixos-rebuild for 10+ minutes
