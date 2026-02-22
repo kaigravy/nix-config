@@ -2,7 +2,10 @@
 
 {
   imports = [
-    "${modulesPath}/installer/cd-dvd/installation-cd-graphical-gnome.nix"
+    # Minimal ISO uses GRUB (not systemd-boot) — far more compatible with
+    # ASUS UEFI firmware and removable media. The graphical GNOME ISO uses
+    # systemd-boot which fails to discover entries on some boards.
+    "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
   ];
 
   # Allow unfree and insecure packages (needed for Broadcom Wi-Fi driver)
@@ -49,12 +52,6 @@
   # Enable SSH for remote installation (optional)
   services.openssh.enable = true;
   services.openssh.settings.PermitRootLogin = "yes";
-  
-  # Automatically log in as nixos user
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "nixos";
-  };
   
   # Enable flakes in the ISO
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
