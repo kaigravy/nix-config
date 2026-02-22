@@ -14,6 +14,13 @@ This guide walks you through installing NixOS on the desktop machine "sirocco" w
 
 The custom ISO includes the Broadcom Wi-Fi drivers needed for your ASUS PCE-AC68.
 
+> **Branch note:** The sirocco config lives on the `desktop` branch. Make sure
+> you have it checked out before building:
+> ```bash
+> git checkout desktop
+> ```
+> Merge to `main` first if you prefer to work from there.
+
 From your working NixOS system or another Linux machine with Nix installed:
 
 ```bash
@@ -132,8 +139,8 @@ lsblk
 If your SSD device is **not** `/dev/sda`, you need to update the disk configuration:
 
 ```bash
-# Clone your config repo
-git clone https://github.com/kaigravy/nix-config.git
+# Clone your config repo (desktop branch contains the sirocco config)
+git clone --branch desktop https://github.com/kaigravy/nix-config.git
 cd nix-config
 
 # Edit the disk configuration
