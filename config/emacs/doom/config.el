@@ -24,8 +24,8 @@
 ;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
 ;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 
-(setq doom-font (font-spec :family "CaskaydiaCoveNerdFont" :size 13 :weight 'regular))
-(setq doom-variable-pitch-font (font-spec :family "Atkinson Hyperlegible Next" :size 13 :weight 'regular)
+(setq doom-font (font-spec :family "CaskaydiaCoveNerdFont" :size 13 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Atkinson Hyperlegible Next" :size 14))
 
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -82,3 +82,119 @@
 (setq make-backup-files nil
       auto-save-default nil
       create-lockfiles nil)
+
+;; Org Mode: variable-pitch, fonts, and fixed-pitch for code
+(after! org
+  ;; Use variable-pitch-mode in org buffers, then re-pin line numbers to fixed-pitch
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (face-remap-add-relative 'line-number :font "CaskaydiaCoveNerdFont")
+              (face-remap-add-relative 'line-number-current-line :font "CaskaydiaCoveNerdFont")))
+
+  ;; Resize headings and use variable-pitch font for them
+  (dolist (face '((org-level-1 . 1.35)
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.1)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil
+                        :font "Atkinson Hyperlegible Next"
+                        :weight 'bold
+                        :height (cdr face)))
+
+  ;; Make the document title a bit bigger
+  (set-face-attribute 'org-document-title nil
+                      :font "Atkinson Hyperlegible Next"
+                      :weight 'bold
+                      :height 1.8)
+
+  ;; Ensure org-indent inherits fixed-pitch to avoid spacing issues
+  (require 'org-indent)
+  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+
+  ;; Keep code blocks, verbatim, etc. in fixed-pitch
+  (set-face-attribute 'org-block nil           :foreground 'unspecified :inherit 'fixed-pitch :height 0.85)
+  (set-face-attribute 'org-code nil            :inherit '(shadow fixed-pitch) :height 0.85)
+  (set-face-attribute 'org-indent nil          :inherit '(org-hide fixed-pitch) :height 0.85)
+  (set-face-attribute 'org-verbatim nil        :inherit '(shadow fixed-pitch) :height 0.85)
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil       :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil        :inherit 'fixed-pitch)
+
+  ;; Decluttering & Text Prettification
+  (setq org-adapt-indentation t
+        org-hide-leading-stars t
+        org-hide-emphasis-markers t
+        org-pretty-entities t
+        org-ellipsis " […]")
+
+  (set-face-attribute 'org-ellipsis nil :foreground "#9AA3AD" :underline nil)
+
+  ;; Source code block settings
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-edit-src-content-indentation 0)
+
+  ;; Line wrapping
+  (add-hook 'org-mode-hook 'visual-line-mode)
+
+  ;; Task & Time Tracking: open selection menu instead of cycling
+  (setq org-use-fast-todo-selection t)
+
+  ;; Make the TODO keyword in headings smaller
+  (set-face-attribute 'org-todo nil :height 0.85)
+
+  ;; Task & Time Tracking: priorities
+  (setq org-lowest-priority ?F)  ;; Gives us priorities A through F
+  (setq org-default-priority ?E) ;; If an item has no priority, it is considered [#E].
+  (setq org-priority-faces
+        '((65 . "#BF616A")
+          (66 . "#EBCB8B")
+          (67 . "#B48EAD")
+          (68 . "#81A1C1")
+          (69 . "#5E81AC")
+          (70 . "#4C566A")))
+
+  ;; Task & Time Tracking: keywords and colours
+  (setq org-todo-keywords
+        '((sequence
+           "TODO" "PROJ" "READ" "CHECK" "IDEA" ; Needs further action
+           "|"
+           "DONE")))                           ; Needs no action currently
+  (setq org-todo-keyword-faces
+        '(("TODO"  :inherit (org-todo region) :foreground "#A3BE8C" :weight bold)
+          ("STRD"  :inherit (org-todo region) :foreground "#88C0D0" :weight bold)
+          ("FINL"  :inherit (org-todo region) :foreground "#8FBCBB" :weight bold)
+          ("CHECK" :inherit (org-todo region) :foreground "#81A1C1" :weight bold)
+          ("IDEA"  :inherit (org-todo region) :foreground "#EBCB8B" :weight bold)
+          ("DONE"  :inherit (org-todo region) :foreground "#30343d" :weight bold))))
+
+;; Prettier UI Elements: org-modern
+(use-package! org-modern
+  :after org
+  :config
+  (setq
+   org-auto-align-tags t
+   org-tags-column 0
+   org-fold-catch-invisible-edits 'show-and-error
+   org-special-ctrl-a/e t
+   org-insert-heading-respect-content t
+   ;; Don't style the following
+   org-modern-tag nil
+   org-modern-priority nil
+   org-modern-todo nil
+   org-modern-table nil
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ now ─────────────────────────────────────────────────")
+  (global-org-modern-mode))
