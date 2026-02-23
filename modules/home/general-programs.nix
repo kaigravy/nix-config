@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
 {
   home.packages = with pkgs; [
@@ -34,5 +34,15 @@
     picard
     virtualbox
   ];
+
+  home.sessionVariables = {
+    ANKI_WAYLAND = "1";
+  };
+
+  home.persistence."/persist" = lib.mkIf config.home.evict.enable {
+    directories = [
+      "${config.home.evict.configDirName}/local/share/Anki2"
+    ];
+  };
 }
 
