@@ -13,6 +13,16 @@
         dejavu_fonts    # DejaVu Sans, Serif, Mono
         noto-fonts      # Noto Sans, Serif
         noto-fonts-color-emoji
+        (pkgs.google-fonts.override {
+          fonts = [
+            "Young Serif"
+            "Source Sans 3"
+            "Source Serif 4"
+            "Merriweather"
+            "EB Garamond"
+            "Bitter"
+          ];
+        })
     ];
 
     fonts.fontconfig.enable = true;
