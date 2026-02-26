@@ -1,25 +1,28 @@
 { pkgs, lib, config, ... }:
 
 let
-  ankiDataDirs = lib.concatStringsSep ":" [
-    "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
-    "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
-    "${pkgs.gtk3}/share"
-    "${pkgs.shared-mime-info}/share"
-  ];
-
   ankiWrapped = pkgs.symlinkJoin {
     name = pkgs.anki.name;
     paths = [ pkgs.anki ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram "$out/bin/anki" \
-        --set ANKI_WAYLAND 1 \
-        --prefix XDG_DATA_DIRS : "${ankiDataDirs}"
+        --set ANKI_WAYLAND 1
     '';
   };
 in
 {
+  # Prepend GTK/GSettings schema paths to XDG_DATA_DIRS for the whole user
+  # session. xdg.systemDirs.data appends rather than replaces, so it's safe
+  # globally and fixes the 'org.gtk.Settings.FileChooser not installed' crash
+  # for any GTK app (Anki, Scribus, etc.) launched from the GUI.
+  xdg.systemDirs.data = [
+    "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+    "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    "${pkgs.gtk3}/share"
+    "${pkgs.shared-mime-info}/share"
+  ];
+
   home.packages = with pkgs; [
     libreoffice-fresh hunspell hunspellDicts.en_AU-large
     gimp
